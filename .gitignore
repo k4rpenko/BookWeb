@@ -1,0 +1,9 @@
+
+/.vs
+/BDLearn/bin
+/BDLearn/obj
+/RedisDAL/obj
+/LibraryBLL/obj
+/RedisDAL/bin
+/LibraryBLL/bin
+*.json

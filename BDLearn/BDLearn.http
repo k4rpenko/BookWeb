@@ -1,0 +1,6 @@
+@BDLearn_HostAddress = http://localhost:5169
+
+GET {{BDLearn_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
