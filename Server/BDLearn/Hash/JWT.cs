@@ -4,7 +4,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
-namespace WinFormsApp1.Controllers
+namespace BDLearn.Controllers
 {
     class JWT
     {
@@ -25,6 +25,16 @@ namespace WinFormsApp1.Controllers
                 signingCredentials: credentials
             );
             return new JwtSecurityTokenHandler().WriteToken(token).ToString();
+        }
+
+        public string GetUserIdFromToken(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(token);
+
+            var userIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sub);
+
+            return userIdClaim?.Value;
         }
     }
 }

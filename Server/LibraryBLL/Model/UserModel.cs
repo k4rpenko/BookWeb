@@ -16,6 +16,7 @@ namespace LibraryDAL.Model
         public List<string>? Books { get; set; } = new List<string>();
         public DateTime CreatData { get; set; } = DateTime.UtcNow;
         public DateTime updatedData { get; set; } = DateTime.UtcNow;
+        public DateTime? Blocked { get; set; }
         private string _role;
         public required string Role
         {

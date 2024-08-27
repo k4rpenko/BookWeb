@@ -32,6 +32,9 @@ namespace LibraryDAL.Migrations
                     b.Property<string>("Avatar")
                         .HasColumnType("text");
 
+                    b.Property<DateTime?>("Blocked")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<List<string>>("Books")
                         .HasColumnType("text[]");
 

@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LibraryDAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240827143930_BookHome")]
+    [Migration("20240827192846_BookHome")]
     partial class BookHome
     {
         /// <inheritdoc />
@@ -34,6 +34,9 @@ namespace LibraryDAL.Migrations
 
                     b.Property<string>("Avatar")
                         .HasColumnType("text");
+
+                    b.Property<DateTime?>("Blocked")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<List<string>>("Books")
                         .HasColumnType("text[]");

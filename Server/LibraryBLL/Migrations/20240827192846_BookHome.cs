@@ -25,6 +25,7 @@ namespace LibraryDAL.Migrations
                     Books = table.Column<List<string>>(type: "text[]", nullable: true),
                     CreatData = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updatedData = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Blocked = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     Role = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>

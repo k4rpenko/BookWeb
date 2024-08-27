@@ -4,7 +4,6 @@ using LibraryBLL;
 using LibraryDAL.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using WinFormsApp1.Controllers;
 
 namespace BDLearn.Controllers
 {
@@ -25,26 +24,29 @@ namespace BDLearn.Controllers
             if (_user.Email == null && _user.Password != null) { return NotFound(new { message = "Email && Password == Null" }); }
             try
             {
-                var newUser = new UserModel
+                var user = context.User.FirstOrDefault(u => u.Email == _user.Email);
+                if (user == null)
                 {
-                    Email = _user.Email,
-                    Password = new SHA().ComputeSha256Hash(_user.Password),
-                    UserName = "User",
-                    Role = "User"
-                };
-                context.User.Add(newUser);
-                await context.SaveChangesAsync();
-                var userId = newUser.Id;
-                var record = await context.User.FindAsync(userId);
-                if (record != null)
-                {
-                    var RefreshToken = new JWT().GenerateJwtToken(userId);
-                    record.RefreshToken = RefreshToken;
+                    var newUser = new UserModel
+                    {
+                        Email = _user.Email,
+                        Password = new SHA().ComputeSha256Hash(_user.Password),
+                        UserName = "User",
+                        Role = "User"
+                    };
+                    context.User.Add(newUser);
                     await context.SaveChangesAsync();
-                    return Ok(RefreshToken);
+                    var userId = newUser.Id;
+                    var record = await context.User.FindAsync(userId);
+                    if (record != null)
+                    {
+                        var RefreshToken = new JWT().GenerateJwtToken(userId);
+                        record.RefreshToken = RefreshToken;
+                        await context.SaveChangesAsync();
+                        return Ok(RefreshToken);
+                    }
                 }
-
-                return NotFound("Error");
+                return Unauthorized(new { message = "This user is in the database" });
 
             }
             catch (Exception ex)
@@ -67,7 +69,7 @@ namespace BDLearn.Controllers
                     {
                         return Ok(user.RefreshToken);
                     }
-                    return Unauthorized("Invalid email or password");
+                    return Unauthorized(new { message = "Invalid email or password" });
                 }
                 else
                 {
