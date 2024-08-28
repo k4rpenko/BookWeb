@@ -29,7 +29,7 @@ namespace RedisDAL
 
             public Limiting(IDatabase _db) { db = _db; }
 
-            bool RedisUser(string ip)
+            bool AuthRedisUser(string ip)
             {
                 var requestKey = $"requests:{ip}";
 
