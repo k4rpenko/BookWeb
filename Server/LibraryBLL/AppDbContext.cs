@@ -26,7 +26,8 @@ namespace LibraryBLL
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<UserModel>().Property(x => x.UserName)
+
+            modelBuilder.Entity<UserModel>().Property(x => x.Nick)
                 .HasMaxLength(100)
                 .IsRequired();
 

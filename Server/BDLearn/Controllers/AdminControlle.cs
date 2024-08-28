@@ -2,7 +2,8 @@
 using LibraryBLL;
 using LibraryDAL.Model;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
+using System;
+using System.Threading.Tasks;
 
 namespace BDLearn.Controllers
 {
@@ -10,10 +11,14 @@ namespace BDLearn.Controllers
     [Route("api/[controller]")]
     public class AdminControlle : Controller
     {
-        readonly AppDbContext context;
-        public AdminControlle(AppDbContext _context) { context = _context;}
+        private readonly AppDbContext context;
 
-        public bool Review(AdminModel _AdminModel, UserModel Admin)
+        public AdminControlle(AppDbContext _context)
+        {
+            context = _context;
+        }
+
+        private bool Review(AdminModel _AdminModel, UserModel Admin)
         {
             if (Admin == null) { return false; }
             if (Admin.Role != "Admin") { return false; }
@@ -21,14 +26,15 @@ namespace BDLearn.Controllers
         }
 
         [HttpDelete("deleteuser")]
-        public async Task<IActionResult> DeleteUser(AdminModel _AdminModel)
+        public async Task<IActionResult> DeleteUser([FromBody] AdminModel _AdminModel)
         {
-            if (_AdminModel.IdAdmin == null) { return NotFound(new { message = "Id == Null" }); }
+            if (_AdminModel.IdAdmin == null) { return NotFound(new { message = "IdAdmin == Null" }); }
             var Admin = await context.User.FindAsync(Guid.Parse(_AdminModel.IdAdmin));
-            if(!Review(_AdminModel, Admin)) { return NotFound(); }
+            if (!Review(_AdminModel, Admin)) { return NotFound(); }
 
             var User = await context.User.FindAsync(Guid.Parse(_AdminModel.IdUser));
-            if (User != null) {
+            if (User != null)
+            {
                 context.User.Remove(User);
                 await context.SaveChangesAsync();
                 return Ok();
@@ -37,31 +43,35 @@ namespace BDLearn.Controllers
         }
 
         [HttpPost("blockuser")]
-        public async Task<IActionResult> BlockUser(AdminModel _AdminModel)
+        public async Task<IActionResult> BlockUser([FromBody] AdminModel _AdminModel)
         {
-            if (_AdminModel.IdAdmin == null) { return NotFound(new { message = "Id == Null" }); }
+            if (_AdminModel.IdAdmin == null) { return NotFound(new { message = "IdAdmin == Null" }); }
             var Admin = await context.User.FindAsync(Guid.Parse(_AdminModel.IdAdmin));
             if (!Review(_AdminModel, Admin)) { return NotFound(); }
 
             var User = await context.User.FindAsync(Guid.Parse(_AdminModel.IdUser));
             if (User != null)
             {
-                if(_AdminModel.Blocked == null) { User.Blocked = null; }
-                else { User.Blocked = _AdminModel.Blocked; }
+                User.Blocked = _AdminModel.Blocked;
                 await context.SaveChangesAsync();
                 return Ok();
             }
             return NotFound(new { message = "User == null" });
         }
 
-        [HttpPost("showuser")]
-        public async Task<IActionResult> ShowUser(AdminModel _AdminModel)
+        [HttpPost("showusernick")]
+        public async Task<IActionResult> ShowUserToNick([FromBody] AdminModel _AdminModel)
         {
-            if (_AdminModel.IdAdmin == null) { return NotFound(new { message = "Id == Null" }); }
+            if (_AdminModel.IdAdmin == null) { return NotFound(new { message = "IdAdmin == Null" }); }
             var Admin = await context.User.FindAsync(Guid.Parse(_AdminModel.IdAdmin));
             if (!Review(_AdminModel, Admin)) { return NotFound(); }
 
-
+            // Example logic to show user nick
+            var user = await context.User.FindAsync(Guid.Parse(_AdminModel.IdUser));
+            if (user != null)
+            {
+                return Ok(new { user });
+            }
             return NotFound(new { message = "User == null" });
         }
     }

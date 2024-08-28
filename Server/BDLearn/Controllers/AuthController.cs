@@ -4,6 +4,7 @@ using LibraryBLL;
 using LibraryDAL.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BDLearn.Controllers
 {
@@ -21,17 +22,18 @@ namespace BDLearn.Controllers
         [HttpPost("registration")]
         public async Task<IActionResult> CreateUser(UserAuth _user)
         {
-            if (_user.Email == null && _user.Password != null) { return NotFound(new { message = "Email && Password == Null" }); }
+            if (string.IsNullOrWhiteSpace(_user.Email) || string.IsNullOrWhiteSpace(_user.Password)) { return BadRequest(new { message = "Email and Password cannot be null or empty" }); }
             try
             {
                 var user = context.User.FirstOrDefault(u => u.Email == _user.Email);
                 if (user == null)
                 {
+                    int nextUserNumber = await context.User.CountAsync() + 1;
                     var newUser = new UserModel
                     {
                         Email = _user.Email,
                         Password = new SHA().ComputeSha256Hash(_user.Password),
-                        UserName = "User",
+                        Nick = $"User{nextUserNumber}",
                         Role = "User"
                     };
                     context.User.Add(newUser);
@@ -59,7 +61,7 @@ namespace BDLearn.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> LoginUser(UserAuth _user)
         {
-            if (_user.Email == null && _user.Password != null) { return NotFound(new { message = "Email && Password == Null" }); }
+            if (string.IsNullOrWhiteSpace(_user.Email) || string.IsNullOrWhiteSpace(_user.Password)) { return BadRequest(new { message = "Email and Password cannot be null or empty" }); }
             try
             {
                 var user = context.User.FirstOrDefault(u => u.Email == _user.Email);

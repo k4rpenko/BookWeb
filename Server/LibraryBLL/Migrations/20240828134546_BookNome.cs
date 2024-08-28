@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LibraryDAL.Migrations
 {
     /// <inheritdoc />
-    public partial class BookHome : Migration
+    public partial class BookNome : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,7 +19,7 @@ namespace LibraryDAL.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Password = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    UserName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Nick = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Avatar = table.Column<string>(type: "text", nullable: true),
                     RefreshToken = table.Column<string>(type: "text", nullable: true),
                     Books = table.Column<List<string>>(type: "text[]", nullable: true),

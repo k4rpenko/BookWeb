@@ -5,7 +5,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetSection("Npgsql:ConnectionString").Value));
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        builder => builder.WithOrigins("https://example.com")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod());
+});
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
 
@@ -32,9 +38,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
+app.UseCors("AllowSpecificOrigin");
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

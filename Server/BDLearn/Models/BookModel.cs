@@ -1,4 +1,4 @@
-﻿using WinFormsApp1.Controllers;
+﻿using BDLearn.Controllers;
 
 namespace BDLearn.Models
 {

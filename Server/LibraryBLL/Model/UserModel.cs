@@ -10,7 +10,7 @@ namespace LibraryDAL.Model
 
         public required string Email { get; set; }
         public required string Password { get; set; }
-        public string? UserName { get; set; }
+        public string Nick { get; set; } 
         public string? Avatar { get; set; }
         public string? RefreshToken { get; set; }
         public List<string>? Books { get; set; } = new List<string>();

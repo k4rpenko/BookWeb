@@ -14,14 +14,7 @@ namespace BDLearn.Models
             }
         }
 
-        private string _IdUser { get; set; }
-        public string IdUser
-        {
-            get => _IdUser; set
-            {
-                _IdUser = new JWT().GetUserIdFromToken(value);
-            }
-        }
+        public string IdUser { get; set; }
 
         public DateTime? Blocked { get; set; }
 
