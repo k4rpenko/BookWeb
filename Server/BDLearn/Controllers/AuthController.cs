@@ -13,10 +13,8 @@ namespace BDLearn.Controllers
     public class AuthController : Controller
     {
         private readonly AppDbContext context;
-        public AuthController(AppDbContext _context)
-        {
-            context = _context;
-        }
+        public AuthController(AppDbContext _context) { context = _context; }
+
 
 
         [HttpPost("registration")]
@@ -32,7 +30,7 @@ namespace BDLearn.Controllers
                     var newUser = new UserModel
                     {
                         Email = _user.Email,
-                        Password = new SHA().ComputeSha256Hash(_user.Password),
+                        Password = new HASH().Encrypt(_user.Password),
                         Nick = $"User{nextUserNumber}",
                         Role = "User"
                     };
@@ -67,7 +65,7 @@ namespace BDLearn.Controllers
                 var user = context.User.FirstOrDefault(u => u.Email == _user.Email);
                 if (user != null)
                 {
-                    if (user.Password == new SHA().ComputeSha256Hash(_user.Password))
+                    if (user.Password == new HASH().Encrypt(_user.Password))
                     {
                         return Ok(user.RefreshToken);
                     }
