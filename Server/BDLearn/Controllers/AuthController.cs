@@ -5,6 +5,7 @@ using LibraryDAL.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using RedisDAL;
 
 namespace BDLearn.Controllers
 {
@@ -13,8 +14,9 @@ namespace BDLearn.Controllers
     public class AuthController : Controller
     {
         private readonly AppDbContext context;
+        private readonly RedisConfigure redis;
         HASH _HASH = new HASH();
-        public AuthController(AppDbContext _context) { context = _context; }
+        public AuthController(AppDbContext _context, RedisConfigure _redis) { context = _context; redis = _redis; }
 
 
 
@@ -53,34 +55,39 @@ namespace BDLearn.Controllers
             catch (Exception ex)
             {
                 return NotFound(ex.Message);
-            }
+            } 
         }
 
 
         [HttpPost("login")]
         public async Task<IActionResult> LoginUser(UserAuth _user)
         {
-            if (string.IsNullOrWhiteSpace(_user.Email) || string.IsNullOrWhiteSpace(_user.Password)) { return BadRequest(new { message = "Email and Password cannot be null or empty" }); }
-            try
+            var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+            if (redis.AuthRedisUser(ipAddress))
             {
-                var user = context.User.FirstOrDefault(u => u.Email == _user.Email);
-                if (user != null)
+                if (string.IsNullOrWhiteSpace(_user.Email) || string.IsNullOrWhiteSpace(_user.Password)) { return BadRequest(new { message = "Email and Password cannot be null or empty" }); }
+                try
                 {
-                    if (user.Password == _HASH.Encrypt(_user.Password))
+                    var user = context.User.FirstOrDefault(u => u.Email == _user.Email);
+                    if (user != null)
                     {
-                        return Ok(user.RefreshToken);
+                        if (user.Password == _HASH.Encrypt(_user.Password))
+                        {
+                            return Ok(user.RefreshToken);
+                        }
+                        return Unauthorized(new { message = "Invalid email or password" });
                     }
-                    return Unauthorized(new { message = "Invalid email or password" });
+                    else
+                    {
+                        return NotFound();
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    return NotFound();
+                    return NotFound(ex.Message);
                 }
             }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
+            return StatusCode(StatusCodes.Status429TooManyRequests, new { message = "Too many requests from this IP address" });
         }
     }
 }

@@ -1,10 +1,14 @@
 using LibraryBLL;
 using Microsoft.EntityFrameworkCore;
+using RedisDAL;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetSection("Npgsql:ConnectionString").Value));
+
+builder.Services.AddSingleton<RedisConfigure>();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin",
@@ -13,6 +17,8 @@ builder.Services.AddCors(options =>
                           .AllowAnyMethod());
 });
 builder.Services.AddControllers();
+
+
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();

@@ -11,6 +11,7 @@ namespace BDLearn.Controllers
     {
         readonly IConfiguration _configuration;
         readonly AppDbContext context;
+        readonly JWT JWT = new JWT();
         public BookController(AppDbContext _context, IConfiguration configuration) { context = _context; _configuration = configuration; }
 
         [HttpPost("addbook")]
@@ -67,7 +68,7 @@ namespace BDLearn.Controllers
             if (token == null) { return NotFound(new { message = "Id == Null" }); }
             try
             {
-                var user = await context.User.FindAsync(Guid.Parse(new JWT().GetUserIdFromToken(token)));
+                var user = await context.User.FindAsync(Guid.Parse(JWT.GetUserIdFromToken(token)));
                 if (user != null)
                 {
                     return Ok(user.Books);
@@ -87,7 +88,7 @@ namespace BDLearn.Controllers
             if (token == null && IdScroll == null) { return NotFound(new { message = "Id == Null" }); }
             try
             {
-                var user = await context.User.FindAsync(Guid.Parse(new JWT().GetUserIdFromToken(token)));
+                var user = await context.User.FindAsync(Guid.Parse(JWT.GetUserIdFromToken(token)));
                 if (user != null)
                 {
                     string apiKey = _configuration["GoogleBook:key"];
