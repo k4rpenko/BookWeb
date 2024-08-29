@@ -8,9 +8,19 @@ namespace BDLearn.Controllers
 {
     class JWT
     {
+        private readonly byte[] Key;
+
+        public JWT()
+        {
+            var builder = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json")
+            .Build();
+
+            Key = Convert.FromBase64String(builder.GetSection("JWT:Key").Value);
+        }
         public string GenerateJwtToken(Guid userId)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("60bbc98d70e6eb359a1083506131e5041de7a0caaa5d8829237bc074ea67672f"));
+            var securityKey = new SymmetricSecurityKey(Key);
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
