@@ -20,8 +20,15 @@ namespace RedisDAL
         void one()
         {
             string connectionString = _configuration.GetSection("Redis:ConnectionString").Value;
-            redis = ConnectionMultiplexer.Connect(connectionString);
-            db = redis.GetDatabase();
+            try
+            {
+                redis = ConnectionMultiplexer.Connect(connectionString);
+                db = redis.GetDatabase();
+            }
+            catch (RedisConnectionException ex)
+            {
+                throw new Exception("Не вдалося підключитися до Redis", ex);
+            }
         }
 
         public bool AuthRedisUser(string ip)
