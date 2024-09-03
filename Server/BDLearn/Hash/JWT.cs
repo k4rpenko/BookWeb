@@ -6,7 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace BDLearn.Controllers
 {
-    class JWT
+    internal class JWT
     {
         private readonly byte[] Key;
 

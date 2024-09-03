@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace BDLearn.Hash
 {
-    public class HASH
+    internal class HASH
     {
         private readonly byte[] Key;
         private readonly byte[] Iv;
