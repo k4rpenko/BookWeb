@@ -1,0 +1,6 @@
+services:
+  bdlearn:
+    image: ${DOCKER_REGISTRY-}bdlearn
+    build:
+      context: .
+      dockerfile: BDLearn/Dockerfile

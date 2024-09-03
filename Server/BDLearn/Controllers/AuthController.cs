@@ -2,7 +2,6 @@
 using BDLearn.Models;
 using LibraryBLL;
 using LibraryDAL.Model;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RedisDAL;
@@ -13,6 +12,7 @@ namespace BDLearn.Controllers
     [Route("api/[controller]")]
     public class AuthController : Controller
     {
+
         private readonly AppDbContext context;
         private readonly RedisConfigure redis;
         HASH _HASH = new HASH();
@@ -37,6 +37,7 @@ namespace BDLearn.Controllers
                         Nick = $"User{nextUserNumber}",
                         Role = "User"
                     };
+                    Console.WriteLine(_HASH.Encrypt(_user.Password));
                     context.User.Add(newUser);
                     await context.SaveChangesAsync();
                     var userId = newUser.Id;
@@ -69,18 +70,10 @@ namespace BDLearn.Controllers
                 try
                 {
                     var user = context.User.FirstOrDefault(u => u.Email == _user.Email);
-                    if (user != null)
-                    {
-                        if (user.Password == _HASH.Encrypt(_user.Password))
-                        {
-                            return Ok(user.RefreshToken);
-                        }
-                        return Unauthorized(new { message = "Invalid email or password" });
-                    }
-                    else
-                    {
-                        return NotFound();
-                    }
+                    if (user == null) { return NotFound(); }
+                    if (_HASH.Encrypt(_user.Password) != user.Password) { return Unauthorized(new { message = "Invalid email or password" }); }
+
+                    return Ok(user.RefreshToken);
                 }
                 catch (Exception ex)
                 {

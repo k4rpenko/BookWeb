@@ -33,13 +33,12 @@ namespace BDLearn.Controllers
             if (!Review(_AdminModel, Admin)) { return NotFound(); }
 
             var User = await context.User.FindAsync(Guid.Parse(_AdminModel.IdUser));
-            if (User != null)
-            {
-                context.User.Remove(User);
-                await context.SaveChangesAsync();
-                return Ok();
-            }
-            return NotFound(new { message = "User == null" });
+            if (User == null) { return NotFound(new { message = "User == null" }); }
+
+            context.User.Remove(User);
+            await context.SaveChangesAsync();
+            return Ok();
+            
         }
 
         [HttpPost("blockuser")]
@@ -50,13 +49,12 @@ namespace BDLearn.Controllers
             if (!Review(_AdminModel, Admin)) { return NotFound(); }
 
             var User = await context.User.FindAsync(Guid.Parse(_AdminModel.IdUser));
-            if (User != null)
-            {
-                User.Blocked = _AdminModel.Blocked;
-                await context.SaveChangesAsync();
-                return Ok();
-            }
-            return NotFound(new { message = "User == null" });
+            if (User == null) { return NotFound(new { message = "User == null" }); }
+
+            User.Blocked = _AdminModel.Blocked;
+            await context.SaveChangesAsync();
+            return Ok();
+            
         }
 
         [HttpPost("showusernick")]
@@ -66,13 +64,11 @@ namespace BDLearn.Controllers
             var Admin = await context.User.FindAsync(Guid.Parse(_AdminModel.IdAdmin));
             if (!Review(_AdminModel, Admin)) { return NotFound(); }
 
-            // Example logic to show user nick
             var user = await context.User.FindAsync(Guid.Parse(_AdminModel.IdUser));
-            if (user != null)
-            {
-                return Ok(new { user });
-            }
-            return NotFound(new { message = "User == null" });
+            if (user == null) { return NotFound(new { message = "User == null" }); }
+
+
+            return Ok(new { user });
         }
     }
 }
