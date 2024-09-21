@@ -1,0 +1,91 @@
+.main_book_photo img{
+    height: 100%;
+    width: auto;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.main_book_photo {
+    padding-bottom: 50px;
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+}
+
+
+.main_book{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    transition: all ease-in-out .1s;
+}
+
+.main_book_author p{
+    text-decoration: none;
+    color: inherit;
+}
+
+.main_book_panel{
+    padding: 16px 23px 16px 23px;
+    display: flex;
+    width: 100%;
+    text-decoration: none;
+    color: inherit;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.main_book_panel a{
+    display: flex;
+    text-decoration: none;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+}
+
+.main_book_title p{
+    text-decoration: none;
+    color: inherit;
+    font-size: 14px;
+    font-family: "CeraRoundPro-Black", sans-serif;
+    font-weight: 200;
+}
+
+.main_book_money{
+    display: flex;
+    justify-content: space-between;
+}
+
+.main_book_price p{
+    text-decoration: none;
+    color: inherit;
+    font-size: 18px;
+    font-family: "CeraRoundPro-Black", sans-serif;
+    font-weight: 200;
+}
+
+.main_book_money_button button{
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    text-indent: -9999px;
+    background: linear-gradient(180deg, #a97ebe 0,var(--basic) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 100%;
+    max-width: 42px;
+    cursor: pointer;
+    z-index: 20;
+    border: none;
+}
+
+
+@media only screen and (min-width: 581px) {
+    .main_book:hover{
+        height: 100%;
+        box-shadow: 0 6px 15px rgba(0,0,0,.08);
+        border-radius: 2px;
+    }
+}

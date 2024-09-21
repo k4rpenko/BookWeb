@@ -45,6 +45,27 @@ namespace BDLearn.Models
         public string thumbnail { get; set; }
     }
 
+    public class listPrice
+    {
+        [JsonProperty("amount")]
+        public string amount { get; set; }
+
+        [JsonProperty("currencyCode")]
+        public string currencyCode { get; set; }
+    }
+
+    public class saleInfo
+    {
+        [JsonProperty("country")]
+        public string country{ get; set; }
+
+        [JsonProperty("saleability")]
+        public string saleability { get; set; }
+
+        [JsonProperty("listPrice")]
+        public listPrice listPrice { get; set; }
+    }
+
     public class Item
     {
         [JsonProperty("id")]
@@ -52,6 +73,9 @@ namespace BDLearn.Models
 
         [JsonProperty("volumeInfo")]
         public VolumeInfo VolumeInfo { get; set; }
+
+        [JsonProperty("saleInfo")]
+        public saleInfo saleInfo { get; set; }
 
     }
 

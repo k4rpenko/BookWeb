@@ -1,0 +1,26 @@
+@font-face {
+    font-display: swap;
+    font-family: "CeraRoundPro-Medium";
+    font-style: normal;
+    font-weight: 500;
+    src: url('../public/Fonts/CeraPro-Medium.woff2') format('opentype');; 
+}
+
+@font-face {
+    font-display: swap;
+    font-family: "CeraRoundPro-Black";
+    font-style: normal;
+    src: url('../public/Fonts/CeraPro-Black.woff2') format('opentype');; 
+}
+
+body {
+    background: #fff;
+    background-color: rgb(255, 255, 255);
+    margin: 0;
+    font-family: 'Cera Round Pro','Trebuchet MS',Arial;
+    height: 100%;
+    min-width: 320px;
+    font-size: 14px;
+    line-height: 20px;
+    color: #28282c;
+  }

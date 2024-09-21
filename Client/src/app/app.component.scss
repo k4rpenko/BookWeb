@@ -1,0 +1,41 @@
+.main_content{
+    margin: 0 auto;
+    width: calc(100% - 600px);
+    height: 100%;
+}
+
+.catalog__goods{
+    float: right;
+}
+
+.catalog__good_books{
+    margin-top: 50px;
+    display: grid;
+    grid-gap: 0px;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: repeat(4, 1fr);
+    position: relative;
+    clear: both;
+}
+
+.Books_content {
+    height: 437px;
+    position: relative;
+    border-bottom: 1px solid #e5e5e5; 
+    border-right: 1px solid #e5e5e5; 
+}
+
+.Books_content:nth-child(4n) {
+    border-right: none;
+}
+
+.Books_content:last-child {
+    border-right: none;
+    border-bottom: none;
+}
+
+.new-paragraph {
+    border-bottom: none;
+    border-right: none;
+}
+

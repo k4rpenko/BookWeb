@@ -13,11 +13,11 @@ namespace RedisDAL
         public RedisConfigure(IConfiguration configuration)
         {
             _configuration = configuration;
-            one();
+            Connect();
         }
 
 
-        void one()
+        void Connect()
         {
             string connectionString = _configuration.GetSection("Redis:ConnectionString").Value;
             try

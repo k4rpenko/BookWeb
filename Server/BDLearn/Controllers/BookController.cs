@@ -105,5 +105,23 @@ namespace BDLearn.Controllers
                 return NotFound(ex.Message);
             }
         }
+
+        [HttpGet("showbook_newuser")]
+        public async Task<IActionResult> showbook_newuser([FromQuery] int IdScroll)
+        {
+            if (IdScroll == null) { return NotFound(new { message = "Id == Null" }); }
+            try
+            {
+                string apiKey = _configuration["GoogleBook:key"];
+                string url = $"https://www.googleapis.com/books/v1/volumes?q=flowers&orderBy=relevance&maxResults=20&startIndex={IdScroll}&key={apiKey}";
+                var booksResponse = await new BooksRes().GetBooks(url);
+                return Ok(booksResponse);
+            }
+            catch (Exception ex)
+            {
+
+                return NotFound(ex.Message);
+            }
+        }
     }
 }
