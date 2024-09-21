@@ -1,5 +1,6 @@
 import { Component, inject, Input, input } from '@angular/core';
 import { Book } from "../../../../data/interface/book.interface";
+import { CartService } from '../../../../data/card/cart.service';
 
 @Component({
   selector: 'app-books-page',
@@ -10,4 +11,21 @@ import { Book } from "../../../../data/interface/book.interface";
 })
 export class BooksPageComponent {
   @Input() books?: Book;
+
+  constructor(private cartService: CartService) {
+  }
+
+  AddToCard(book: Book | undefined):void {
+    console.log("add");
+    console.log(this.cartService.getTotal());
+    
+    const item = {
+      id: book?.id.toString(),
+      title: book?.volumeInfo.title.toString(),
+      price: Number(book?.saleInfo.listPrice?.amount) || 0,
+      image: book?.volumeInfo.imageLinks.smallThumbnail,
+      quantity: 1
+    }
+    this.cartService.AddToCard(item);
+  }
 }

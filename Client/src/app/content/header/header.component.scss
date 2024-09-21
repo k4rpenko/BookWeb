@@ -99,6 +99,7 @@ header{
 }
 
 .header_profile a{
+    cursor: pointer;
     display: flex;
     justify-content: center;
     grid-gap: 7px;
@@ -124,4 +125,5 @@ header{
     font-weight: 700;
     color: #fff;
     border-radius: 21px;
+    cursor: pointer;
 }

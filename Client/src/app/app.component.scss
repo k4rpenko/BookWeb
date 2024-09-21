@@ -39,3 +39,46 @@
     border-right: none;
 }
 
+@media only screen and (min-width: 1000px) and (max-width: 1600px){
+    .main_content{
+        margin: 0 auto;
+        width: calc(100% - 100px);
+        height: 100%;
+    }
+}
+
+@media only screen and (min-width: 800px) and (max-width: 1000px){
+    .main_content{
+        margin: 0 auto;
+        width: calc(100% - 100px);
+        height: 100%;
+    }
+
+    .catalog__good_books{
+        margin-top: 50px;
+        display: grid;
+        grid-gap: 0px;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-template-columns: repeat(3, 1fr);
+        position: relative;
+        clear: both;
+    }
+}
+
+@media only screen and (min-width: 0px) and (max-width: 800px){
+    .main_content{
+        margin: 0 auto;
+        width: calc(100% - 100px);
+        height: 100%;
+    }
+
+    .catalog__good_books{
+        margin-top: 50px;
+        display: grid;
+        grid-gap: 0px;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-template-columns: repeat(2, 1fr);
+        position: relative;
+        clear: both;
+    }
+}
