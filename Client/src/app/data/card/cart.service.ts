@@ -13,14 +13,14 @@ interface CartItem {
   providedIn: 'root'
 })
 export class CartService {
-  private cartItems: CartItem[] = []
+  cartItems: CartItem[] = []
   private cart = new BehaviorSubject<CartItem[]>([]);
   cart$ = this.cart.asObservable();
 
   AddToCard(item: CartItem): void{
     const existingItem = this.cartItems.find(cartItem => cartItem.id === item.id);
     if (existingItem) {
-      existingItem.quantity += item.quantity;
+      existingItem.quantity += 1;
     } else {
       this.cartItems.push(item);
     }
@@ -31,11 +31,22 @@ export class CartService {
   removeFromCart(id: string): void {
     this.cartItems = this.cartItems.filter(item => item.id !== id);
     this.cart.next([...this.cartItems]);
+    localStorage.setItem('cartItems', JSON.stringify(this.cartItems));
+  }
+
+  DeleteOneQuantity(item: CartItem){
+    if (item.quantity > 1) {
+      const existingItem = this.cartItems.find(cartItem => cartItem.id === item.id);
+      if (!existingItem) { return ;}
+      item.quantity = existingItem.quantity -= 1;
+      localStorage.setItem('cartItems', JSON.stringify(this.cartItems));
+    }
   }
 
   clearCart(): void {
     this.cartItems = [];
     this.cart.next([...this.cartItems]);
+    localStorage.removeItem('cartItems');
   }
 
   getTotal(): number {
@@ -45,6 +56,11 @@ export class CartService {
   getTotalBook(): number {
     return this.cartItems.length;
   }
+
+  getBook() {
+    return this.cartItems;
+  }
+
 
   constructor() { 
     const savedItems = localStorage.getItem('cartItems');

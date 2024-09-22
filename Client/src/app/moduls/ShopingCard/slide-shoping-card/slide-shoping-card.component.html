@@ -1,1 +1,44 @@
-<p>slide-shoping-card works!</p>
+<div class="ShopingCard_parent-container">
+    
+<div class="ShopingCard_main">
+    <div class="ShopingCard_name"><h2>Кошик</h2> <a (click)="onClose()">&#10005;</a></div>
+    <div *ngIf="cartItems.length > 0" class="ShopingCard_cart_Books">
+        <div *ngFor="let item of cartItems" class="ShopingCard_cart-item">
+          <img [src]="item.image" alt="{{ item.title }}" class="ShopingCard_item-image">
+          <div class="ShopingCard_item-details">
+            <div class="ShopingCard_item-title">
+                <h4>{{ item.title }}</h4>
+                <a (click)="Removebook(item)">&#10005;</a>
+            </div>
+            <div class="ShopingCard_item-price">
+              <h3>{{ item.price === 0 ? "Free" : item.price}}</h3>
+              <div class="ShopingCard_item_count">           
+                <a (click)="DeleteQuantity(item)" class="minus">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 12H18" stroke="#B8BEC6" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </a>           
+                <span class="value">{{item.quantity}}</span>                    
+                <a (click)="AddQuantity(item)" class="plus">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 6V18" stroke="#20B1A9" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M6 12H18" stroke="#20B1A9" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </a>       
+            </div>
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+
+<div class="ShopingCard_bottom">
+    <div class="ShopingCard_bottom_buy">
+        <p>До сплати: </p>
+        <div class="ShopingCard_bottom_total">
+            <p>{{cartItems.length}}: вибрано</p>
+            <h2>{{Total.toFixed(2)}} грн</h2>
+        </div>
+    </div>
+</div>
+</div>

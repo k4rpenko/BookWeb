@@ -22,6 +22,5 @@ export class AppComponent {
 
   constructor() {this.profileService.getBook().subscribe(response  => {
     this.book = response.items;
-    console.log(response);
   })}
 }

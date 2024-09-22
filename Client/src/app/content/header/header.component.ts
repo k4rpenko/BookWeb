@@ -19,13 +19,12 @@ export class HeaderComponent {
   ngOnInit() {
     this.cartService.cart$.subscribe(() => {
       this.length = this.cartService.getTotalBook();
-      console.log(this.length = this.cartService.getTotalBook());
     });
   }
 
   openDialog(): void {
     this.dialog.open(SlideMenuComponent, {
-      width: '300px',
+      width: '410px',
       height: '100%',
       position: { left: '0', top: '0' },
       panelClass: 'custom-container'
@@ -38,7 +37,7 @@ export class HeaderComponent {
 
   openShopCard(): void{
     this.dialog.open(SlideShopingCardComponent, {
-      width: '300px',
+      width: '410px',
       height: '100%',
       position: { right: '0', top: '0' },
       panelClass: 'custom-container'

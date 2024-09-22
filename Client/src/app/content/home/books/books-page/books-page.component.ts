@@ -16,9 +16,6 @@ export class BooksPageComponent {
   }
 
   AddToCard(book: Book | undefined):void {
-    console.log("add");
-    console.log(this.cartService.getTotal());
-    
     const item = {
       id: book?.id.toString(),
       title: book?.volumeInfo.title.toString(),

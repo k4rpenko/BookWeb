@@ -1,9 +1,13 @@
 header{
+    width: 100%;
     height: 64px;
     font-family: "CeraRoundPro-Medium", sans-serif;
     color: var(--white-color-text);
     background-color: #1f1f22;
     border-radius: 0 0 20px 20px;
+    position: fixed;
+    top: 0;
+    z-index: 100;
 }
 .Header{
     height: 100%;

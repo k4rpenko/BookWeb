@@ -1,3 +1,136 @@
+.ShopingCard_parent-container{
+    display: grid;
+    grid-template-rows: 1fr auto;
+    height: 100vh;
+}
+
+
 .mat-mdc-dialog-surface {
     border-radius: 0%;
+}
+
+.ShopingCard_main{
+    padding: 20px;
+    overflow-y: auto;
+    height: calc(100vh - 180px);
+}
+
+.ShopingCard_name{
+    padding-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.ShopingCard_name h2{
+    font-family: "CeraRoundPro-Bold", sans-serif;
+}
+
+.ShopingCard_name a{
+    cursor: pointer;
+    font-size: 25px;
+}
+
+.ShopingCard_cart_Books{
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 10px;
+}
+
+.ShopingCard_cart-item{
+    border: 1px solid #e5e5e5;
+    padding: 16px;
+    position: relative;
+    display: flex;
+}
+
+.ShopingCard_cart-item img{
+    max-width: 70px;
+    max-height: 90px;
+}
+
+.ShopingCard_item-details{
+    width: 100%;
+    padding-left: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.ShopingCard_item-details h4{
+    font-family: "CeraRoundPro-Bold", sans-serif
+}
+
+.ShopingCard_item-title{
+    display: flex;
+    justify-content: space-between;
+}
+
+.ShopingCard_item-title a{
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    font-size: 15px;
+}
+
+.ShopingCard_item-price{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ShopingCard_item_count{
+    width: 84px;
+    border: 1px solid #e5e5e5;
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 4px;
+    height: 36px;
+    text-align: center;
+    color: #80868e;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 700;
+    align-items: center;
+}
+
+.ShopingCard_bottom {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    height: 150px;
+    width: 410px;
+    border-top: 1px solid #e5e5e5;
+    background-color: white;
+    z-index: 1000;
+}
+
+.ShopingCard_bottom_buy{
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.ShopingCard_bottom_buy p{
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 16px;
+    color: #80868e;
+}
+
+.ShopingCard_bottom_total{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    grid-gap: 20px;
+}
+
+.ShopingCard_bottom_total p{
+    color: black;
+    font-family: "CeraRoundPro-Bold", sans-serif;
+}
+
+.ShopingCard_bottom_total h2{
+    font-family: "CeraRoundPro-Bold", sans-serif;
 }
