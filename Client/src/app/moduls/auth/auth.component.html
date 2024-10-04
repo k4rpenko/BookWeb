@@ -7,10 +7,11 @@
         </div>
         <span data-v-12a599d3="" class="auth_delimiter">  або  </span>
         <div class="auth_form">
-            <form action="" method="post">
+            <form (ngSubmit)="onSubmit()">
                 <div class="auth_form_email">
-                    <label for="">Номер телефону або електронна пошта</label>
-                    <input type="email" autocomplete="" maxlength="120" placeholder="Введите номер или email">
+                    <label for="">Eлектронна пошта</label>
+                    <input id="emailL" [(ngModel)]="emailL" type="email" name="emailF" maxlength="120" placeholder="Введите email" required>
+                    <div *ngIf="emailError" class="error">{{ emailError }}</div> 
                 </div>
     
                 <div class="auth_form_password">
@@ -18,15 +19,15 @@
                         <label for="">Пароль</label>
                         <a for="">забув пароль</a>
                     </div>
-                    <input type="password" name="auth_password" autocomplete="" placeholder="Введите пароль" >
-    
+                    <input id="passL" [(ngModel)]="passL" type="password" name="auth_password" autocomplete="" placeholder="Введите пароль" required>
+                    <div *ngIf="passwordError" class="error">{{ passwordError }}</div>
                 </div>
                 <button>Увійти</button>
             </form>
         </div>
         <div class="auth_forgot">
             <span>Немає акаунту?</span>
-            <a href="">Регестрація</a>
+            <a (click)="RegisterForm()">Регестрація</a>
         </div>
     </div>
 </div>

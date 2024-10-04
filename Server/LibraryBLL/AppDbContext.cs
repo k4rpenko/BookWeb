@@ -1,10 +1,11 @@
 ﻿using LibraryDAL.Model;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace LibraryBLL
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext
     {
         private readonly IConfiguration _configuration;
 
@@ -27,23 +28,17 @@ namespace LibraryBLL
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-            modelBuilder.Entity<UserModel>().Property(x => x.Nick)
+            modelBuilder.Entity<UserModel>().Property(x => x.FirstName)
                 .HasMaxLength(100)
                 .IsRequired();
 
-            modelBuilder.Entity<UserModel>().Property(x => x.Email)
+            modelBuilder.Entity<UserModel>().Property(x => x.LastName)
                 .HasMaxLength(100)
                 .IsRequired();
 
-            modelBuilder.Entity<UserModel>().Property(x => x.Password)
-                .HasMaxLength(100)
+            modelBuilder.Entity<UserModel>().Property(x => x.Avatar)
+                .HasMaxLength(2000)
                 .IsRequired();
-
-            modelBuilder.Entity<UserModel>().Property(x => x.Books)
-                .HasColumnType("text[]");
-
-            modelBuilder.Entity<UserModel>().Property(x => x.Role)
-                .HasMaxLength(50);
 
             base.OnModelCreating(modelBuilder);
         }

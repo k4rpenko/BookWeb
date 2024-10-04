@@ -60,3 +60,11 @@ D:\Work UA\Csh\BD\BDLearn\Server\bin\Debug\RedisDAL.pdb
 D:\Work UA\Csh\BD\BDLearn\Server\obj\Debug\docker-compose.dcproj.AssemblyReference.cache
 D:\Work UA\Csh\BD\BDLearn\Server\obj\Debug\docker-compose.dcproj.CoreCompileInputs.cache
 D:\Work UA\Csh\BD\BDLearn\Server\obj\Debug\docker-c.35A3FFBA.Up2Date
+D:\Work UA\Csh\BD\BDLearn\Server\bin\Debug\BDLearn.staticwebassets.runtime.json
+D:\Work UA\Csh\BD\BDLearn\Server\bin\Debug\Microsoft.AspNetCore.Identity.UI.dll
+D:\Work UA\Csh\BD\BDLearn\Server\bin\Debug\Microsoft.Extensions.Identity.Core.dll
+D:\Work UA\Csh\BD\BDLearn\Server\bin\Debug\Microsoft.Extensions.Identity.Stores.dll
+D:\Work UA\Csh\BD\BDLearn\Server\bin\Debug\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+D:\Work UA\Csh\BD\BDLearn\Server\bin\Debug\Microsoft.Extensions.Options.dll
+D:\Work UA\Csh\BD\BDLearn\Server\bin\Debug\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+D:\Work UA\Csh\BD\BDLearn\Server\bin\Debug\Microsoft.AspNetCore.Cryptography.Internal.dll

@@ -18,7 +18,7 @@ namespace BDLearn.Controllers
 
             Key = Convert.FromBase64String(builder.GetSection("JWT:Key").Value);
         }
-        public string GenerateJwtToken(Guid userId)
+        public string GenerateJwtToken(string userId)
         {
             var securityKey = new SymmetricSecurityKey(Key);
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -46,5 +46,6 @@ namespace BDLearn.Controllers
 
             return userIdClaim?.Value;
         }
+
     }
 }

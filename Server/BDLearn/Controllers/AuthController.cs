@@ -2,6 +2,7 @@
 using BDLearn.Models;
 using LibraryBLL;
 using LibraryDAL.Model;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RedisDAL;
@@ -26,26 +27,53 @@ namespace BDLearn.Controllers
             if (string.IsNullOrWhiteSpace(_user.Email) || string.IsNullOrWhiteSpace(_user.Password)) { return BadRequest(new { message = "Email and Password cannot be null or empty" }); }
             try
             {
+
                 var user = context.User.FirstOrDefault(u => u.Email == _user.Email);
                 if (user == null)
                 {
+                    var KeyG = BitConverter.ToString(_HASH.GenerateKey()).Replace("-", "").ToLower();
                     int nextUserNumber = await context.User.CountAsync() + 1;
                     var newUser = new UserModel
                     {
                         Email = _user.Email,
-                        Password = _HASH.Encrypt(_user.Password),
-                        Nick = $"User{nextUserNumber}",
-                        Role = "User"
+                        ConcurrencyStamp = KeyG,
+                        PasswordHash = _HASH.Encrypt(_user.Password, KeyG),
+                        UserName = $"User{nextUserNumber}",
+                        FirstName = "User"
                     };
-                    Console.WriteLine(_HASH.Encrypt(_user.Password));
+
                     context.User.Add(newUser);
                     await context.SaveChangesAsync();
+
+
+                    var newToken = new IdentityUserToken<string> 
+                    {
+                        UserId = newUser.Id,
+                        LoginProvider = "Default",
+                        Name = newUser.UserName,
+                        Value = new JWT().GenerateJwtToken(newUser.Id)
+                    };
+
+                    context.UserTokens.Add(newToken); 
+                    await context.SaveChangesAsync();
+
+                    var UserRoleID = context.Roles.FirstOrDefault(u => u.Name == "User");
+                    var UserRole = new IdentityUserRole<string>
+                    {
+                        UserId = newUser.Id,
+                        RoleId = UserRoleID.Id
+                    };
+
+
+                    context.UserRoles.Add(UserRole);
+                    await context.SaveChangesAsync();
+                   
                     var userId = newUser.Id;
                     var record = await context.User.FindAsync(userId);
                     if (record != null)
                     {
                         var RefreshToken = new JWT().GenerateJwtToken(userId);
-                        record.RefreshToken = RefreshToken;
+                        
                         await context.SaveChangesAsync();
                         return Ok(RefreshToken);
                     }
@@ -71,9 +99,9 @@ namespace BDLearn.Controllers
                 {
                     var user = context.User.FirstOrDefault(u => u.Email == _user.Email);
                     if (user == null) { return NotFound(); }
-                    if (_HASH.Encrypt(_user.Password) != user.Password) { return Unauthorized(new { message = "Invalid email or password" }); }
+                    if (_HASH.Encrypt(_user.Password, user.ConcurrencyStamp) != user.PasswordHash) { return Unauthorized(new { message = "Invalid email or password" }); }
 
-                    return Ok(user.RefreshToken);
+                    return Ok(context.UserTokens.FirstOrDefault(tk => tk.UserId == user.Id).Value);
                 }
                 catch (Exception ex)
                 {

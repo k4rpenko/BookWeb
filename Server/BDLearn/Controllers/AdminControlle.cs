@@ -1,6 +1,7 @@
 ﻿using BDLearn.Models;
 using LibraryBLL;
 using LibraryDAL.Model;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -18,10 +19,10 @@ namespace BDLearn.Controllers
             context = _context;
         }
 
-        private bool Review(AdminModel _AdminModel, UserModel Admin)
+        private bool Review(AdminModel _AdminModel, IdentityRole Admin)
         {
             if (Admin == null) { return false; }
-            if (Admin.Role != "Admin") { return false; }
+            if (Admin.Name != "Admin") { return false; }
             return true;
         }
 
@@ -29,10 +30,10 @@ namespace BDLearn.Controllers
         public async Task<IActionResult> DeleteUser([FromBody] AdminModel _AdminModel)
         {
             if (_AdminModel.IdAdmin == null) { return NotFound(new { message = "IdAdmin == Null" }); }
-            var Admin = await context.User.FindAsync(Guid.Parse(_AdminModel.IdAdmin));
+            var Admin = await context.Roles.FindAsync(_AdminModel.IdAdmin);
             if (!Review(_AdminModel, Admin)) { return NotFound(); }
 
-            var User = await context.User.FindAsync(Guid.Parse(_AdminModel.IdUser));
+            var User = await context.User.FindAsync(_AdminModel.IdUser);
             if (User == null) { return NotFound(new { message = "User == null" }); }
 
             context.User.Remove(User);
@@ -45,13 +46,13 @@ namespace BDLearn.Controllers
         public async Task<IActionResult> BlockUser([FromBody] AdminModel _AdminModel)
         {
             if (_AdminModel.IdAdmin == null) { return NotFound(new { message = "IdAdmin == Null" }); }
-            var Admin = await context.User.FindAsync(Guid.Parse(_AdminModel.IdAdmin));
+            var Admin = await context.Roles.FindAsync(_AdminModel.IdAdmin);
             if (!Review(_AdminModel, Admin)) { return NotFound(); }
 
-            var User = await context.User.FindAsync(Guid.Parse(_AdminModel.IdUser));
+            var User = await context.User.FindAsync(_AdminModel.IdUser);
             if (User == null) { return NotFound(new { message = "User == null" }); }
 
-            User.Blocked = _AdminModel.Blocked;
+            User.LockoutEnd = _AdminModel.Blocked;
             await context.SaveChangesAsync();
             return Ok();
             
@@ -61,10 +62,10 @@ namespace BDLearn.Controllers
         public async Task<IActionResult> ShowUserToNick([FromBody] AdminModel _AdminModel)
         {
             if (_AdminModel.IdAdmin == null) { return NotFound(new { message = "IdAdmin == Null" }); }
-            var Admin = await context.User.FindAsync(Guid.Parse(_AdminModel.IdAdmin));
+            var Admin = await context.Roles.FindAsync(_AdminModel.IdAdmin);
             if (!Review(_AdminModel, Admin)) { return NotFound(); }
 
-            var user = await context.User.FindAsync(Guid.Parse(_AdminModel.IdUser));
+            var user = await context.User.FindAsync(_AdminModel.IdUser);
             if (user == null) { return NotFound(new { message = "User == null" }); }
 
 
