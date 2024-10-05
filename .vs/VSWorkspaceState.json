@@ -1,8 +1,7 @@
 {
   "ExpandedNodes": [
-    "",
-    "\\Server"
+    ""
   ],
-  "SelectedNode": "\\Server\\docker-compose.dcproj",
+  "SelectedNode": "\\Server",
   "PreviewInSolutionExplorer": false
 }

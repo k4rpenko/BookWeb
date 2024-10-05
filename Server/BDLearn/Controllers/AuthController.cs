@@ -1,5 +1,6 @@
 ﻿using BDLearn.Hash;
 using BDLearn.Models;
+using BDLearn.Sending;
 using LibraryBLL;
 using LibraryDAL.Model;
 using Microsoft.AspNetCore.Identity;
@@ -13,7 +14,7 @@ namespace BDLearn.Controllers
     [Route("api/[controller]")]
     public class AuthController : Controller
     {
-
+        private readonly EmailSeding _emailSend = new EmailSeding();
         private readonly AppDbContext context;
         private readonly RedisConfigure redis;
         HASH _HASH = new HASH();
@@ -27,7 +28,7 @@ namespace BDLearn.Controllers
             if (string.IsNullOrWhiteSpace(_user.Email) || string.IsNullOrWhiteSpace(_user.Password)) { return BadRequest(new { message = "Email and Password cannot be null or empty" }); }
             try
             {
-
+                //_emailSend.PasswordCheckEmail(_user.Email);
                 var user = context.User.FirstOrDefault(u => u.Email == _user.Email);
                 if (user == null)
                 {
