@@ -79,6 +79,7 @@
     padding: 12px 16px;
     border-radius: 7px;
     margin-top: 20px;
+    cursor: pointer;
 }
 
 
@@ -124,6 +125,10 @@
    text-decoration: none;
    color: inherit;
    cursor: pointer;
+}
+
+.ConfirmationPassword a{
+    cursor: pointer;
 }
 
 .error{

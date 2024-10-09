@@ -10,18 +10,12 @@ namespace BDLearn.Controllers
     {
         private readonly byte[] Key;
 
-        public JWT()
+        public JWT() {}
+        public string GenerateJwtToken(string userId, string Key, int time)
         {
-            var builder = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json")
-            .Build();
-
-            Key = Convert.FromBase64String(builder.GetSection("JWT:Key").Value);
-        }
-        public string GenerateJwtToken(string userId)
-        {
-            var securityKey = new SymmetricSecurityKey(Key);
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Key));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            var expiration = DateTime.Now.AddHours(time);
 
             var claims = new[]
             {
@@ -31,7 +25,7 @@ namespace BDLearn.Controllers
 
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.Now.AddDays(30),
+                expires: expiration,
                 signingCredentials: credentials
             );
             return new JwtSecurityTokenHandler().WriteToken(token).ToString();
@@ -47,5 +41,24 @@ namespace BDLearn.Controllers
             return userIdClaim?.Value;
         }
 
+        public bool ValidateToken(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            try
+            {
+                var jwtToken = handler.ReadJwtToken(token);
+                var userIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sub);
+
+                if (userIdClaim == null)
+                    return false;
+
+                var expiration = jwtToken.ValidTo;
+                return expiration > DateTime.UtcNow;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

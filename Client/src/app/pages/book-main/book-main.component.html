@@ -1,0 +1,9 @@
+<div class="main_content">
+    <div class="catalog__goods">
+        <div class="catalog__good_books">
+            <div *ngFor="let books of book" class="Books_content">
+                <app-books-page  [books]="books"></app-books-page>
+            </div>
+        </div>
+    </div>
+</div>

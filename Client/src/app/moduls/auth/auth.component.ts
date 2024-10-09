@@ -1,9 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { RegisterComponent } from '../../moduls/auth/register/register.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { LoginService } from '../../data/AuthRequest/Login.service';
+import { ConfirmationEmail } from '../../data/AuthRequest/ConfirmationPasswordEmail.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-auth',
@@ -13,7 +16,10 @@ import { CommonModule } from '@angular/common';
   styleUrl: './auth.component.scss'
 })
 export class AuthComponent {
-  constructor(public dialog: MatDialog, public dialogRef: MatDialogRef<AuthComponent>) {}
+  constructor(public dialog: MatDialog, public dialogRef: MatDialogRef<AuthComponent>, private router: Router) {}
+
+  profileService = inject(LoginService);
+  ConfirmationEmail = inject(ConfirmationEmail);
 
   onClose(): void {
     this.dialogRef.close();
@@ -28,6 +34,11 @@ export class AuthComponent {
   passL: string = '';    
   emailError: string = '';
   passwordError: string = ''; 
+  ConfirmationPassword: boolean = false;
+
+  SendEmailConfirmation(){
+    this.ConfirmationEmail._ConfirmationEmail(this.emailL).subscribe({});
+  }
 
   onSubmit(): void {
     this.emailError = '';
@@ -42,11 +53,31 @@ export class AuthComponent {
     } 
 
     if (!this.emailError && !this.passwordError) {
-      const formData = {
-        emailF: this.emailL,
-        pass1F: this.passL,
-      };
-      console.log('Дані форми:', formData);
+      this.profileService.PostLogin(this.emailL, this.passL).subscribe({
+        next: (response) => {
+          if (response) {
+            window.location.reload()
+          }
+        },
+        error: (error) => {
+          console.log(error.status); 
+          if (error.status === 401) {
+            this.passwordError = 'Не вірний пароль, або електронна адреса';
+          } else if (error.status === 400) {
+            this.ConfirmationPassword = true;
+            this.passwordError = 'Користувач існує, але не авторизований, підтвердіть електронну пошту';
+          } else if (error.status === 429) {
+            this.passwordError = 'Ви перевищили ліміт запитів';
+          } else {
+            if(error.status === 200){
+              window.location.reload()
+            }
+            else{
+              this.passwordError = 'Сталася помилка, спробуйте ще раз';
+            }
+          }
+        }
+      });
     }
   }
 

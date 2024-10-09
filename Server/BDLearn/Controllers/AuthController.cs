@@ -28,10 +28,11 @@ namespace BDLearn.Controllers
             if (string.IsNullOrWhiteSpace(_user.Email) || string.IsNullOrWhiteSpace(_user.Password)) { return BadRequest(new { message = "Email and Password cannot be null or empty" }); }
             try
             {
-                //_emailSend.PasswordCheckEmail(_user.Email);
+                
                 var user = context.User.FirstOrDefault(u => u.Email == _user.Email);
                 if (user == null)
                 {
+
                     var KeyG = BitConverter.ToString(_HASH.GenerateKey()).Replace("-", "").ToLower();
                     int nextUserNumber = await context.User.CountAsync() + 1;
                     var newUser = new UserModel
@@ -44,19 +45,18 @@ namespace BDLearn.Controllers
                     };
 
                     context.User.Add(newUser);
-                    await context.SaveChangesAsync();
-
+ 
 
                     var newToken = new IdentityUserToken<string> 
                     {
                         UserId = newUser.Id,
                         LoginProvider = "Default",
                         Name = newUser.UserName,
-                        Value = new JWT().GenerateJwtToken(newUser.Id)
+                        Value = new JWT().GenerateJwtToken(newUser.Id, KeyG, 720)
                     };
 
                     context.UserTokens.Add(newToken); 
-                    await context.SaveChangesAsync();
+                    
 
                     var UserRoleID = context.Roles.FirstOrDefault(u => u.Name == "User");
                     var UserRole = new IdentityUserRole<string>
@@ -71,15 +71,22 @@ namespace BDLearn.Controllers
                    
                     var userId = newUser.Id;
                     var record = await context.User.FindAsync(userId);
+
                     if (record != null)
                     {
-                        var RefreshToken = new JWT().GenerateJwtToken(userId);
+                        var RefreshToken = newToken.Value;
                         
                         await context.SaveChangesAsync();
+                        await _emailSend.PasswordCheckEmailAsync(_user.Email, new JWT().GenerateJwtToken(userId, KeyG, 1), Request.Scheme, Request.Host.ToString());
                         return Ok(RefreshToken);
                     }
                 }
-                return Unauthorized(new { message = "This user is in the database" });
+                if (user.EmailConfirmed == false)
+                {
+                    return BadRequest(new { message = "Ваша електронна адреса не підтверджена." });
+                }
+                return Unauthorized(new { message = "Цей користувач є в базі даних." });
+
 
             }
             catch (Exception ex)
@@ -101,7 +108,10 @@ namespace BDLearn.Controllers
                     var user = context.User.FirstOrDefault(u => u.Email == _user.Email);
                     if (user == null) { return NotFound(); }
                     if (_HASH.Encrypt(_user.Password, user.ConcurrencyStamp) != user.PasswordHash) { return Unauthorized(new { message = "Invalid email or password" }); }
-
+                    if (user.EmailConfirmed == false)
+                    {
+                        return BadRequest(new { message = "Ваша електронна адреса не підтверджена." });
+                    }
                     return Ok(context.UserTokens.FirstOrDefault(tk => tk.UserId == user.Id).Value);
                 }
                 catch (Exception ex)

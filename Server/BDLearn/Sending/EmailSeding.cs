@@ -1,4 +1,5 @@
-﻿using System.Net.Mail;
+﻿using System.Net;
+using System.Net.Mail;
 using Microsoft.Extensions.Configuration;
 
 namespace BDLearn.Sending
@@ -15,31 +16,33 @@ namespace BDLearn.Sending
                 .Build();
             SenderEmail = builder.GetSection("Mailhog:SenderEmail").Value;
 
-
             smtpClient = new SmtpClient(builder.GetSection("Mailhog:Host").Value)
             {
-                Port = int.Parse(builder.GetSection("Mailhog:Port").Value),
-                EnableSsl = true,
+                Port = 1025,
+                EnableSsl = false,
+                Credentials = new NetworkCredential(SenderEmail, string.Empty)
             };
         }
 
-        public void PasswordCheckEmail(string EmailTo)
+        public async Task PasswordCheckEmailAsync(string EmailTo, string url, string scheme, string host)
         {
             try
             {
                 var mailMessage = new MailMessage
                 {
-                    From = new MailAddress(SenderEmail),
+                    From = new MailAddress(SenderEmail, "HomeBook"),
                     Subject = "Test Email",
-                    Body = "This is a test email.",
+                    Body = $"Please confirm your password by clicking here: <a href='{scheme}://{host}/reset-password/{url}/action'>link</a>",
                     IsBodyHtml = true,
                 };
                 mailMessage.To.Add(EmailTo);
-                smtpClient.Send(mailMessage);
+
+                await smtpClient.SendMailAsync(mailMessage);
             }
             catch (SmtpException smtpEx)
             {
-                throw new Exception($"SMTP помилка: {smtpEx.Message}", smtpEx);
+                throw new Exception($"SMTP помилка: {smtpEx.StatusCode}, {smtpEx.Message}, Додаткові дані: {smtpEx.InnerException?.Message}");
+
             }
             catch (Exception ex)
             {

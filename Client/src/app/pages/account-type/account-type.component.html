@@ -1,0 +1,25 @@
+<div *ngIf="actionType === 'confirm'">
+    <div (ngSubmit)="ValidEmail()"></div>
+</div>
+  
+<div *ngIf="actionType === 'change'">
+    <h2>Зміна пароля</h2>
+    <form>
+        <input
+        type="password"
+        placeholder="Старий пароль"
+        [(ngModel)]="oldPassword"
+        name="oldPassword"
+        required
+        />
+        <input
+        type="password"
+        placeholder="Новий пароль"
+        [(ngModel)]="newPassword"
+        name="newPassword"
+        required
+        />
+        <button type="submit">Змінити пароль</button>
+    </form>
+</div>
+  

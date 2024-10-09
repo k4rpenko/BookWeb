@@ -20,7 +20,15 @@
                         <a for="">забув пароль</a>
                     </div>
                     <input id="passL" [(ngModel)]="passL" type="password" name="auth_password" autocomplete="" placeholder="Введите пароль" required>
-                    <div *ngIf="passwordError" class="error">{{ passwordError }}</div>
+                    <div class="ConfirmationPassword">
+                        <div *ngIf="ConfirmationPassword; else passwordField">
+                            <a (click)="SendEmailConfirmation()">Відправити повторно лист</a>
+                            <div *ngIf="passwordError" class="error">{{ passwordError }}</div> 
+                        </div>
+                        <ng-template #passwordField>
+                            <div *ngIf="passwordError" class="error">{{ passwordError }}</div> 
+                        </ng-template>
+                    </div>
                 </div>
                 <button>Увійти</button>
             </form>

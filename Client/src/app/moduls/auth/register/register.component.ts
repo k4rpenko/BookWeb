@@ -1,9 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { AuthComponent } from '../../../moduls/auth/auth.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { RegisterService } from '../../../data/AuthRequest/Register.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -13,8 +15,10 @@ import { CommonModule } from '@angular/common';
   styleUrl: './register.component.scss'
 })
 export class RegisterComponent {
-  constructor(public dialog: MatDialog, public dialogRef: MatDialogRef<RegisterComponent>) {}
+  constructor(public dialog: MatDialog, public dialogRef: MatDialogRef<RegisterComponent>, private router: Router) {}
 
+  profileService = inject(RegisterService);
+  
   onClose(): void {
     this.dialogRef.close();
   }
@@ -45,12 +49,20 @@ export class RegisterComponent {
     }
 
     if (!this.emailError && !this.passwordError) {
-      const formData = {
-        emailF: this.emailR,
-        pass1F: this.pass1R,
-        pass2F: this.pass2R,
-      };
-      console.log('Дані форми:', formData);
+      this.profileService.PostRegister(this.emailR, this.pass1R).subscribe({
+        next: (response) => {
+          this.router.navigate(['/']);
+        },
+        error: (error) => {
+          if (error.status === 401 || error.status === 400) {
+            this.passwordError = 'Користувач існує';
+          }  else if (error.status === 429) {
+            this.passwordError = 'Ви перевищили ліміт запитів';
+          } else {
+            this.passwordError = 'Сталася помилка, спробуйте ще раз';
+          }
+        }
+      });
     }
   }
 
