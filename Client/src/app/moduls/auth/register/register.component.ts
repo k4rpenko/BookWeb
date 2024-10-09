@@ -6,16 +6,19 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RegisterService } from '../../../data/AuthRequest/Register.service';
 import { Router } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
+
 
 @Component({
   selector: 'app-register',
   standalone: true,
   imports: [  CommonModule, FormsModule],
+  providers: [CookieService],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })
 export class RegisterComponent {
-  constructor(public dialog: MatDialog, public dialogRef: MatDialogRef<RegisterComponent>, private router: Router) {}
+  constructor(public dialog: MatDialog, public dialogRef: MatDialogRef<RegisterComponent>, private router: Router, private cookieService: CookieService) {}
 
   profileService = inject(RegisterService);
   
@@ -51,7 +54,9 @@ export class RegisterComponent {
     if (!this.emailError && !this.passwordError) {
       this.profileService.PostRegister(this.emailR, this.pass1R).subscribe({
         next: (response) => {
-          this.router.navigate(['/']);
+          const token = response.token;
+          this.cookieService.set('authToken', token);
+          //window.location.reload()
         },
         error: (error) => {
           if (error.status === 401 || error.status === 400) {

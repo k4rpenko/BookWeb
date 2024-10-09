@@ -33,7 +33,7 @@ namespace BDLearn.Controllers
             }
             catch (Exception ex) {
 
-                return NotFound(ex.Message);
+                throw new Exception("", ex);
             }
         }
 
@@ -57,8 +57,7 @@ namespace BDLearn.Controllers
             }
             catch (Exception ex)
             {
-
-                return NotFound(ex.Message);
+                throw new Exception("", ex);
             }
         }
 
@@ -77,8 +76,7 @@ namespace BDLearn.Controllers
             }
             catch (Exception ex)
             {
-
-                return NotFound(ex.Message);
+                throw new Exception("", ex);
             }
         }
 
@@ -101,8 +99,7 @@ namespace BDLearn.Controllers
             }
             catch (Exception ex)
             {
-
-                return NotFound(ex.Message);
+                throw new Exception("", ex);
             }
         }
 
@@ -119,8 +116,7 @@ namespace BDLearn.Controllers
             }
             catch (Exception ex)
             {
-
-                return NotFound(ex.Message);
+                throw new Exception("", ex);
             }
         }
     }

@@ -7,16 +7,19 @@ import { CommonModule } from '@angular/common';
 import { LoginService } from '../../data/AuthRequest/Login.service';
 import { ConfirmationEmail } from '../../data/AuthRequest/ConfirmationPasswordEmail.service';
 import { Router } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
+
 
 @Component({
   selector: 'app-auth',
   standalone: true,
   imports: [  CommonModule, FormsModule],
+  providers: [CookieService],
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.scss'
 })
 export class AuthComponent {
-  constructor(public dialog: MatDialog, public dialogRef: MatDialogRef<AuthComponent>, private router: Router) {}
+  constructor(public dialog: MatDialog, public dialogRef: MatDialogRef<AuthComponent>, private router: Router, private cookieService: CookieService) {}
 
   profileService = inject(LoginService);
   ConfirmationEmail = inject(ConfirmationEmail);
@@ -55,9 +58,9 @@ export class AuthComponent {
     if (!this.emailError && !this.passwordError) {
       this.profileService.PostLogin(this.emailL, this.passL).subscribe({
         next: (response) => {
-          if (response) {
-            window.location.reload()
-          }
+          const token = response.token;
+          this.cookieService.set('authToken', token);
+          //window.location.reload()
         },
         error: (error) => {
           console.log(error.status); 
@@ -69,12 +72,9 @@ export class AuthComponent {
           } else if (error.status === 429) {
             this.passwordError = 'Ви перевищили ліміт запитів';
           } else {
-            if(error.status === 200){
-              window.location.reload()
-            }
-            else{
-              this.passwordError = 'Сталася помилка, спробуйте ще раз';
-            }
+            console.log(error);
+            
+            this.passwordError = 'Сталася помилка, спробуйте ще раз';
           }
         }
       });

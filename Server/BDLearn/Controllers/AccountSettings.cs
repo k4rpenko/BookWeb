@@ -42,7 +42,7 @@ namespace BDLearn.Controllers
         }
 
         [HttpPost("ConfirmationEmail")]
-        public async Task<IActionResult> ConfirmationEmail(string email)
+        public async Task<IActionResult> ConfirmationEmail(OnlyEnailModel email)
         {
             try
             {

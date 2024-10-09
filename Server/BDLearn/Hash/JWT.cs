@@ -11,11 +11,11 @@ namespace BDLearn.Controllers
         private readonly byte[] Key;
 
         public JWT() {}
-        public string GenerateJwtToken(string userId, string Key, int time)
+        public string GenerateJwtToken(string userId, string Key, int Hours)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Key));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-            var expiration = DateTime.Now.AddHours(time);
+            var expiration = DateTime.Now.AddHours(Hours);
 
             var claims = new[]
             {
@@ -50,7 +50,9 @@ namespace BDLearn.Controllers
                 var userIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sub);
 
                 if (userIdClaim == null)
+                {
                     return false;
+                }
 
                 var expiration = jwtToken.ValidTo;
                 return expiration > DateTime.UtcNow;

@@ -17,6 +17,7 @@ namespace BDLearn.Controllers
         private readonly EmailSeding _emailSend = new EmailSeding();
         private readonly AppDbContext context;
         private readonly RedisConfigure redis;
+        private readonly JWT _jwt = new JWT();
         HASH _HASH = new HASH();
         public AuthController(AppDbContext _context, RedisConfigure _redis) { context = _context; redis = _redis; }
 
@@ -52,7 +53,7 @@ namespace BDLearn.Controllers
                         UserId = newUser.Id,
                         LoginProvider = "Default",
                         Name = newUser.UserName,
-                        Value = new JWT().GenerateJwtToken(newUser.Id, KeyG, 720)
+                        Value = _jwt.GenerateJwtToken(newUser.Id, KeyG, 720)
                     };
 
                     context.UserTokens.Add(newToken); 
@@ -77,8 +78,8 @@ namespace BDLearn.Controllers
                         var RefreshToken = newToken.Value;
                         
                         await context.SaveChangesAsync();
-                        await _emailSend.PasswordCheckEmailAsync(_user.Email, new JWT().GenerateJwtToken(userId, KeyG, 1), Request.Scheme, Request.Host.ToString());
-                        return Ok(RefreshToken);
+                        await _emailSend.PasswordCheckEmailAsync(_user.Email, _jwt.GenerateJwtToken(userId, KeyG, 1), Request.Scheme, Request.Host.ToString());
+                        return Ok();
                     }
                 }
                 if (user.EmailConfirmed == false)
@@ -91,8 +92,8 @@ namespace BDLearn.Controllers
             }
             catch (Exception ex)
             {
-                return NotFound(ex.Message);
-            } 
+                throw new Exception("", ex);
+            }
         }
 
 
@@ -112,11 +113,12 @@ namespace BDLearn.Controllers
                     {
                         return BadRequest(new { message = "Ваша електронна адреса не підтверджена." });
                     }
-                    return Ok(context.UserTokens.FirstOrDefault(tk => tk.UserId == user.Id).Value);
+                    var accets = _jwt.GenerateJwtToken(user.Id, user.ConcurrencyStamp, 1);
+                    return Ok(new { token = accets });
                 }
                 catch (Exception ex)
                 {
-                    return NotFound(ex.Message);
+                    throw new Exception("", ex);
                 }
             }
             return StatusCode(StatusCodes.Status429TooManyRequests, new { message = "Too many requests from this IP address" });

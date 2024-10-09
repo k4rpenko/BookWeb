@@ -13,7 +13,7 @@ export class LoginService {
       "email": email,
       "password": password
     };
-    return this.http.post(`https://localhost:8081/api/Auth/login`, json, {
+    return this.http.post<{ token	: string }>(`https://localhost:8081/api/Auth/login`, json, {
       headers: { 'Content-Type': 'application/json' }
   });
   }
