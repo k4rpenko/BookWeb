@@ -1,16 +1,19 @@
+using BDLearn.Protection;
 using LibraryBLL;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RedisDAL;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Налаштування контексту бази даних
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetSection("Npgsql:ConnectionString").Value));
 
 builder.Services.AddSingleton<RedisConfigure>();
 
-
+// Налаштування CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin",
@@ -19,6 +22,7 @@ builder.Services.AddCors(options =>
                           .AllowAnyMethod());
 });
 
+// Налаштування Identity
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddDefaultTokenProviders()
     .AddDefaultUI()
@@ -26,7 +30,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
-    // Password settings.
+    // Налаштування паролів
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
     options.Password.RequireNonAlphanumeric = false;
@@ -35,7 +39,7 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequiredUniqueChars = 1;
 
 
-    // User settings.
+    // Налаштування користувачів
     options.User.AllowedUserNameCharacters =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
     options.User.RequireUniqueEmail = false;
@@ -50,6 +54,9 @@ builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.UseMiddleware<RateLimitingMiddleware>();
+
 
 
 using (var scope = app.Services.CreateScope())

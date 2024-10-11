@@ -19,25 +19,32 @@ import { CookieService } from 'ngx-cookie-service';
 })
 export class AppComponent implements OnInit{
   title = 'angular';
+  private lastRequestTime: Date | null = null;
   profileService = inject(updateAccetsToken);
+  private readonly REQUEST_INTERVAL = 1500000;
   token: string = '';
 
   constructor(private route: ActivatedRoute, private router: Router, private cookieService: CookieService) {}
 
 
   ngOnInit(): void {
-    this.token = this.cookieService.get('authToken');
+    const now = new Date();
 
-    this.profileService.updateAccetsToken(this.token).subscribe({
-      next: (response) => {
-        const token = response.token;
-        this.cookieService.set('authToken', token);
-        this.router.navigate(['/']);
-      },
-      error: (error) => {
-        console.error('Помилка при виконанні POST запиту:', error);
+    if (!this.lastRequestTime || now.getTime() - this.lastRequestTime.getTime() > this.REQUEST_INTERVAL) {
+      this.token = this.cookieService.get('authToken');
+      this.lastRequestTime = now;
+      if( this.token !== '' || this.token !== null){
+        this.profileService.updateAccetsToken(this.token).subscribe({
+          next: (response) => {
+            const token = response.token;
+            this.cookieService.set('authToken', token);
+            this.router.navigate(['/']);
+          },
+          error: (error) => {
+            console.error('Помилка при виконанні POST запиту:', error);
+          }
+        });
       }
-    });
+    }
   }
-  
 }

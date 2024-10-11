@@ -56,7 +56,7 @@ export class RegisterComponent {
         next: (response) => {
           const token = response.token;
           this.cookieService.set('authToken', token);
-          //window.location.reload()
+          window.location.reload()
         },
         error: (error) => {
           if (error.status === 401 || error.status === 400) {

@@ -60,7 +60,7 @@ export class AuthComponent {
         next: (response) => {
           const token = response.token;
           this.cookieService.set('authToken', token);
-          //window.location.reload()
+          window.location.reload()
         },
         error: (error) => {
           console.log(error.status); 
