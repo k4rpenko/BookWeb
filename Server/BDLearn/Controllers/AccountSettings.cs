@@ -1,4 +1,5 @@
-﻿using BDLearn.Models;
+﻿using BDLearn.Hash;
+using BDLearn.Models;
 using BDLearn.Sending;
 using LibraryBLL;
 using Microsoft.AspNetCore.Mvc;
@@ -15,23 +16,26 @@ namespace BDLearn.Controllers
     {
         private readonly EmailSeding _emailSend = new EmailSeding();
         private readonly AppDbContext context;
+        HASH _HASH = new HASH();
+        private readonly JWT _jwt = new JWT();
         public AccountSettings(AppDbContext _context) { context = _context; }
 
-        [HttpPost("CheckingPassword")]
-        public async Task<IActionResult> CheckingPassword(TokenModel _PasswordM)
+        [HttpPost("ConfirmationAccount")]
+        public async Task<IActionResult> CheckingPassword(TokenModel Account)
         {
             try
             {
-                if (_PasswordM.Jwt != null && new JWT().ValidateToken(_PasswordM.Jwt))
+                if (Account.Jwt != null && _jwt.ValidateToken(Account.Jwt))
                 {
-                    var id = new JWT().GetUserIdFromToken(_PasswordM.Jwt);
-                    var user = await context.Users.FindAsync(id);
+                    var id = _jwt.GetUserIdFromToken(Account.Jwt);
+                    var user = context.User.FirstOrDefault(u => u.Id == id);
                     if (user != null)
                     {
                         user.EmailConfirmed = true;
                         await context.SaveChangesAsync();
                     }
-                    return Ok();
+                    var accets = _jwt.GenerateJwtToken(id, user.ConcurrencyStamp, 1);
+                    return Ok(new { token = accets });
                 }
                 return NotFound(new { message = "Invalid Token" });
             }
@@ -41,18 +45,26 @@ namespace BDLearn.Controllers
             }
         }
 
-        [HttpPost("ConfirmationEmail")]
-        public async Task<IActionResult> ConfirmationEmail(OnlyEnailModel email)
+        [HttpPost("ChangePassword")]
+        public async Task<IActionResult> CheckingPassword(AccountModel Account)
         {
             try
             {
-                if (email != null)
+                if (Account.Password != null  && _jwt.ValidateToken(Account.Jwt))
                 {
-                    var user = await context.Users.FindAsync(email);
+                    var id = _jwt.GetUserIdFromToken(Account.Jwt);
+                    var user = await context.Users.FindAsync(id);
                     if (user != null)
                     {
-                        await _emailSend.PasswordCheckEmailAsync(user.Email, new JWT().GenerateJwtToken(user.Id, user.ConcurrencyStamp, 1), Request.Scheme, Request.Host.ToString());
-                        return Ok();
+                        string HashNewPassword = _HASH.Encrypt(Account.NewPassword, user.ConcurrencyStamp);
+                        string HashPassword = _HASH.Encrypt(Account.Password, user.ConcurrencyStamp);
+                        if (HashPassword == user.PasswordHash)
+                        {
+                            user.PasswordHash = HashNewPassword;
+                            await context.SaveChangesAsync();
+                            return Ok();
+                        }
+                        return Unauthorized("Invalid credentials");
                     }
                 }
                 return NotFound(new { message = "Invalid Token" });

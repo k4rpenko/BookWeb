@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from "@angular/common";
 import { FormsModule } from '@angular/forms';
-import { EmailValid } from "../../data/AccountCheckValid/EmailValid";
+import { EmailValid } from "../../data/POST/AccountCheckValid/EmailValid";
 import { Router } from '@angular/router';
 
 @Component({

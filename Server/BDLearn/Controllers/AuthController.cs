@@ -42,24 +42,15 @@ namespace BDLearn.Controllers
                         ConcurrencyStamp = KeyG,
                         PasswordHash = _HASH.Encrypt(_user.Password, KeyG),
                         UserName = $"User{nextUserNumber}",
-                        FirstName = "User"
-                    };
+                        FirstName = "User",
+                        Avatar = "https://54hmmo3zqtgtsusj.public.blob.vercel-storage.com/avatar/Logo-yEeh50niFEmvdLeI2KrIUGzMc6VuWd-a48mfVnSsnjXMEaIOnYOTWIBFOJiB2.jpg"
+                    };  
 
                     context.User.Add(newUser);
  
 
-                    var newToken = new IdentityUserToken<string> 
-                    {
-                        UserId = newUser.Id,
-                        LoginProvider = "Default",
-                        Name = newUser.UserName,
-                        Value = _jwt.GenerateJwtToken(newUser.Id, KeyG, 720)
-                    };
-
-                    context.UserTokens.Add(newToken); 
-                    
-
                     var UserRoleID = context.Roles.FirstOrDefault(u => u.Name == "User");
+
                     var UserRole = new IdentityUserRole<string>
                     {
                         UserId = newUser.Id,
@@ -68,6 +59,17 @@ namespace BDLearn.Controllers
 
 
                     context.UserRoles.Add(UserRole);
+
+                    var newToken = new IdentityUserToken<string>
+                    {
+                        UserId = newUser.Id,
+                        LoginProvider = "Default",
+                        Name = newUser.UserName,
+                        Value = _jwt.GenerateJwtToken(newUser.Id, KeyG, 720, UserRoleID.Id)
+                    };
+
+                    context.UserTokens.Add(newToken);
+
                     await context.SaveChangesAsync();
                    
                     var userId = newUser.Id;
@@ -107,13 +109,14 @@ namespace BDLearn.Controllers
                 try
                 {
                     var user = context.User.FirstOrDefault(u => u.Email == _user.Email);
+                    var RoleUser = context.UserRoles.FirstOrDefault(u => u.UserId == user.Id);
                     if (user == null) { return NotFound(); }
                     if (_HASH.Encrypt(_user.Password, user.ConcurrencyStamp) != user.PasswordHash) { return Unauthorized(new { message = "Invalid email or password" }); }
                     if (user.EmailConfirmed == false)
                     {
                         return BadRequest(new { message = "Ваша електронна адреса не підтверджена." });
                     }
-                    var accets = _jwt.GenerateJwtToken(user.Id, user.ConcurrencyStamp, 1);
+                    var accets = _jwt.GenerateJwtToken(user.Id, user.ConcurrencyStamp, 1, RoleUser.RoleId);
                     return Ok(new { token = accets });
                 }
                 catch (Exception ex)

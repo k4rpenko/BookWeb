@@ -11,17 +11,20 @@ namespace BDLearn.Controllers
         private readonly byte[] Key;
 
         public JWT() {}
-        public string GenerateJwtToken(string userId, string Key, int Hours)
+
+        public string GenerateJwtToken(string userId, string Key, int Hours, string userRoleId = null)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Key));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var expiration = DateTime.Now.AddHours(Hours);
 
-            var claims = new[]
+            var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
+
+            if (!string.IsNullOrEmpty(userRoleId)) { claims.Add(new Claim("Role", userRoleId)); }
 
             var token = new JwtSecurityToken(
                 claims: claims,

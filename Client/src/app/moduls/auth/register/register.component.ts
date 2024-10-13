@@ -4,9 +4,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { AuthComponent } from '../../../moduls/auth/auth.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { RegisterService } from '../../../data/AuthRequest/Register.service';
+import { RegisterService } from '../../../data/POST/AuthRequest/Register.service';
+import { JwtPayload } from '../../../data/interface/JwtPayload.interface';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
+import { GlobalState } from '../../../global-types';
+import { jwtDecode } from 'jwt-decode';
 
 
 @Component({
@@ -53,9 +56,13 @@ export class RegisterComponent {
 
     if (!this.emailError && !this.passwordError) {
       this.profileService.PostRegister(this.emailR, this.pass1R).subscribe({
-        next: (response) => {
+        next: async (response) => {
           const token = response.token;
           this.cookieService.set('authToken', token);
+          GlobalState.ValidAccount = true;
+          const decoded = jwtDecode<JwtPayload>(token);
+          this.cookieService.set('UserId', decoded.sub);
+          this.cookieService.set('Role', decoded.Role);
           window.location.reload()
         },
         error: (error) => {
@@ -84,4 +91,8 @@ export class RegisterComponent {
   
     return hasUpperCase && hasLowerCase && hasNumber && isLongEnough; 
   }
+}
+
+function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }

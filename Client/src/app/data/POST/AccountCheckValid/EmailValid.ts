@@ -4,16 +4,15 @@ import { inject, Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root'
 })
-export class RegisterService {
+export class EmailValid {
   http = inject(HttpClient)
   constructor() { }
 
-  PostRegister(email: String, password: String) {
+  PostValidToken(data: String) {
     const json = {
-      "email": email,
-      "password": password
+      jwt: data
     };
-    return this.http.post<{ token	: string }>(`https://localhost:8081/api/Auth/registration`, json, {
+    return this.http.post(`${window.location.origin}/api/AccountSettings/ConfirmationAccount`, json, {
       headers: { 'Content-Type': 'application/json' }
   });
   }

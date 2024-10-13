@@ -4,10 +4,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { RegisterComponent } from '../../moduls/auth/register/register.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { LoginService } from '../../data/AuthRequest/Login.service';
-import { ConfirmationEmail } from '../../data/AuthRequest/ConfirmationPasswordEmail.service';
+import { LoginService } from '../../data/POST/AuthRequest/Login.service';
+import { ConfirmationEmail } from '../../data/POST/AuthRequest/ConfirmationPasswordEmail.service';
+import { JwtPayload } from '../../data/interface/JwtPayload.interface';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
+import { GlobalState } from '../../global-types';
+import { jwtDecode } from 'jwt-decode';
 
 
 @Component({
@@ -42,6 +45,7 @@ export class AuthComponent {
   SendEmailConfirmation(){
     this.ConfirmationEmail._ConfirmationEmail(this.emailL).subscribe({});
   }
+  
 
   onSubmit(): void {
     this.emailError = '';
@@ -56,10 +60,15 @@ export class AuthComponent {
     } 
 
     if (!this.emailError && !this.passwordError) {
+
       this.profileService.PostLogin(this.emailL, this.passL).subscribe({
         next: (response) => {
           const token = response.token;
           this.cookieService.set('authToken', token);
+          GlobalState.ValidAccount = true;
+          const decoded = jwtDecode<JwtPayload>(token);
+          this.cookieService.set('UserId', decoded.sub);
+          this.cookieService.set('Role', decoded.Role);
           window.location.reload()
         },
         error: (error) => {

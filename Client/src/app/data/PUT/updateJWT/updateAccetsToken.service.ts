@@ -4,15 +4,15 @@ import { inject, Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root'
 })
-export class ConfirmationEmail {
+export class updateAccetsToken {
   http = inject(HttpClient)
   constructor() { }
 
-  _ConfirmationEmail(email: String) {
+  updateAccetsToken(data: String) {
     const json = {
-      "email": email,
+      jwt: data
     };
-    return this.http.post(`https://localhost:8081/api/AccountSettings/ConfirmationEmail`, json, {
+    return this.http.put<{ token	: string }>(`${window.location.origin}/api/Verification/TokenUpdate`, json, {
       headers: { 'Content-Type': 'application/json' }
   });
   }

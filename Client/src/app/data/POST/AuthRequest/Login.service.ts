@@ -4,15 +4,16 @@ import { inject, Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root'
 })
-export class updateAccetsToken {
+export class LoginService {
   http = inject(HttpClient)
   constructor() { }
 
-  updateAccetsToken(data: String) {
+  PostLogin(email: String, password: String) {
     const json = {
-      jwt: data
+      "email": email,
+      "password": password
     };
-    return this.http.put<{ token	: string }>(`https://localhost:8081/api/Verification/TokenUpdate`, json, {
+    return this.http.post<{ token	: string }>(`${window.location.origin}/api/Auth/login`, json, {
       headers: { 'Content-Type': 'application/json' }
   });
   }

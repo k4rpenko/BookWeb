@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { BooksPageComponent } from "../../content/home/books/books-page/books-page.component";
-import { GooglebooknewuserService } from "../../data/googlebooknewuser/googlebooknewuser.service";
+import { GooglebooknewuserService } from "../../data/GET/googlebooknewuser/googlebooknewuser.service";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { CommonModule } from "@angular/common";
 import { Book } from "../../data/interface/book.interface";

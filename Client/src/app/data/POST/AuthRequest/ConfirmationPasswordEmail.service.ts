@@ -4,16 +4,15 @@ import { inject, Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root'
 })
-export class LoginService {
+export class ConfirmationEmail {
   http = inject(HttpClient)
   constructor() { }
 
-  PostLogin(email: String, password: String) {
+  _ConfirmationEmail(email: String) {
     const json = {
       "email": email,
-      "password": password
     };
-    return this.http.post<{ token	: string }>(`https://localhost:8081/api/Auth/login`, json, {
+    return this.http.post(`${window.location.origin}/api/AccountSettings/ConfirmationEmail`, json, {
       headers: { 'Content-Type': 'application/json' }
   });
   }
